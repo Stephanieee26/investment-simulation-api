@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invest-sml-api
+  namespace: investment
+  labels:
+    app: invest-sml-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: invest-sml-api
+  template:
+    metadata:
+      labels:
+        app: invest-sml-api
+    spec:
+      containers:
+      - name: invest-sml-api
+        image: stephanieee/etf-api:v1.0.0
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+          initialDelaySeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /docs
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
